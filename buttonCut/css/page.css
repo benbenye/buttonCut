@@ -8,4 +8,5 @@
 .mainUl li span.b{background: url(../images/btnRgbSmall.png) 0 0px;}
 .mainUl li span.o{background: url(../images/btnRgbSmall.png) 0 -346px;}
 .mainUl li span.y{background: url(../images/btnRgbSmall.png) 0 -690px;}
+.mainUl li.fork{background: url(../images/btnRgbSmall.png) 0 -875px;}
 .mainUl li.active{background: url(../images/btnRgbSmall.png) 0 -795px;}
