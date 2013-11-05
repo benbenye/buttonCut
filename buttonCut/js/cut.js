@@ -6,14 +6,14 @@ $(document).ready(function(){
 		clearBox = [],//存储准备剪掉的扣子
 		stepBox = [],//记录每次剪掉的扣子数
 		returnBox = [],//存储已经剪掉的扣子
-		clearIndex = 0,
-		stepIndex =0,
-		indexNew =0,
+		tmpBox = [],//存放中间扣子的临时数组
+		clearIndex = 0,//每次点击时追加后的扣子数
+		stepIndex =0,//一组点击时剪掉的扣子数
 		index = "";
 	//剪扣子
-	function cutBtnFlash(indexNew){
+	function cutBtnFlash(stepIndex){
 		var box =[],
-			num = indexNew;
+			num = stepIndex;
 		for(var i = 0;i<num;i++){
 			box[i] = clearBox[clearIndex-i-1];
 		}
@@ -25,12 +25,11 @@ $(document).ready(function(){
 	}
 	//获取夹在中间的扣子
 	function getButtons(coorX,coorY){
-		var start =0,
-			id = "",
-			flag =0,
-			//indexNew = 0,//此次扣子数
-			coorXoY = 0,
-			XoY = 0;
+		var start =0,//两个扣子中较小的扣子的横坐标或者纵坐标
+			id = "",//夹在中间的扣子的id
+			flag =0,//标识
+			coorXoY = 0,//两个扣子的间距
+			XoY = 0;//取得坐标（竖线取纵坐标横线取横坐标）
 		coorX = parseInt(coorX);
 		coorY = parseInt(coorY);
 		if(coorX){//竖线
@@ -44,28 +43,41 @@ $(document).ready(function(){
 		}
 
 		for (var i = start; i < (coorXoY+start-1); i++) {
-			if(color1 == $("#l"+(i+1)+XoY).children().attr("class")){//取得加在中间的扣子颜色
+			if(color1 == $("#l"+xy(i,XoY)).children().attr("class")){//取得加在中间的扣子颜色
 				flag = 1;
 			}else{
-				if( $("#l"+(i+1)+XoY).children().length != 0){
+				if( $("#l"+xy(i,XoY)).children().length != 0){
 					clearData();
+					tmpBox.length = 0; //清空之前存储的临时数组并跳出循环
+					flag=0;
+					break;
 				}else{
 					flag=2;
 				}
 			}
 			if(flag==1){
-				id = "l"+(i+1)+XoY;
-				clearBox[clearIndex] = id;
-				clearIndex++;
-				indexNew++;
-			}							
+				id = "l"+xy(i,XoY);
+				tmpBox.push(id);
+			}
 		};
-		addCoordinate();	
-		if(indexNew>2){
-			cutBtnFlash(indexNew);
-		}else{
-			cutBtnFlash(2);
+		/////////////////////////////////////////
+		function xy(i,XoY){
+			return (coorX ==0 ? (XoY+(i+1)) : ((i+1)+XoY));
 		}
+		if(coordinate1 != coordinate2 != ""){//数据不为空，说明此次点击有效，执行cutbtn
+			for (var i = tmpBox.length - 1; i >= 0; i--) {
+				clearBox[clearIndex] = tmpBox[i];
+				clearIndex++;
+				stepIndex++;
+			};
+			addCoordinate();	
+			if(stepIndex>2){
+				cutBtnFlash(stepIndex);
+			}else{
+				cutBtnFlash(2);
+			}
+		}
+			
 	}
 	//获取始末两点
 	function addCoordinate(){		
@@ -73,7 +85,7 @@ $(document).ready(function(){
 		clearIndex++;
 		clearBox[clearIndex] = coordinate2;
 		clearIndex++;
-		indexNew = indexNew+2;
+		stepIndex = stepIndex+2;
 	}
 	//判断两次点击是否合法
 	function yesNo(){
