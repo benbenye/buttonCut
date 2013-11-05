@@ -22,62 +22,77 @@ $(document).ready(function(){
 			$("#"+box[i]).addClass("fork").children().fadeOut().detach();
 		}
 		clearData();
-	}
-	//获取夹在中间的扣子
-	function getButtons(coorX,coorY){
-		var start =0,//两个扣子中较小的扣子的横坐标或者纵坐标
-			id = "",//夹在中间的扣子的id
-			flag =0,//标识
-			coorXoY = 0,//两个扣子的间距
-			XoY = 0;//取得坐标（竖线取纵坐标横线取横坐标）
-		coorX = parseInt(coorX);
-		coorY = parseInt(coorY);
-		if(coorX){//竖线
-			start = parseInt((coordinate2x - coordinate1x) > 0 ? coordinate1x : coordinate2x);
-			coorXoY = coorX;
-			XoY = coordinate1y;
-		}else{//横线
-			start = parseInt((coordinate2y - coordinate1y) > 0 ? coordinate1y : coordinate2y);
-			coorXoY = coorY;
-			XoY = coordinate1x;
-		}
-
-		for (var i = start; i < (coorXoY+start-1); i++) {
-			if(color1 == $("#l"+xy(i,XoY)).children().attr("class")){//取得加在中间的扣子颜色
-				flag = 1;
-			}else{
-				if( $("#l"+xy(i,XoY)).children().length != 0){
-					clearData();
-					tmpBox.length = 0; //清空之前存储的临时数组并跳出循环
-					flag=0;
-					break;
-				}else{
-					flag=2;
-				}
-			}
-			if(flag==1){
-				id = "l"+xy(i,XoY);
-				tmpBox.push(id);
-			}
-		};
-		/////////////////////////////////////////
-		function xy(i,XoY){
-			return (coorX ==0 ? (XoY+(i+1)) : ((i+1)+XoY));
-		}
-		if(coordinate1 != coordinate2 != ""){//数据不为空，说明此次点击有效，执行cutbtn
+	}	
+	//是否执行cutBtn
+	function cutYesNo(){
+		if(tmpBox.length != 0){//说明点击有效执行cutbtn
 			for (var i = tmpBox.length - 1; i >= 0; i--) {
 				clearBox[clearIndex] = tmpBox[i];
 				clearIndex++;
 				stepIndex++;
 			};
-			addCoordinate();	
-			if(stepIndex>2){
-				cutBtnFlash(stepIndex);
-			}else{
-				cutBtnFlash(2);
-			}
+			tmpBox.length = 0;//用完后清空方便之后再用
+			cutBtnFlash(stepIndex);
+			stepIndex = 0;
+		}		
+	}
+	//获取夹在中间的扣子 斜线
+	function getDiagonalBtns(coorX, coorY){
+		var step =coorX != 0 ? coorX - 1 : coorY - 1;//获取中间相隔几个扣子
+		tmpBox.push(coordinate1, coordinate2);
+		tmpBox.sort();
+		var Y1 = parseInt(tmpBox[0].substring(2,3)),
+			Y2 = parseInt(tmpBox[1].substring(2,3)),//获取扣子的纵坐标
+			X1 = parseInt(tmpBox[0].substring(1,2)),
+			X2 = parseInt(tmpBox[1].substring(1,2));
+		switchDire();
+		function judgementDire(){//判断直线的方向
+			if(coorX == coorY && Y2 > Y1){return 'leftRight' ;}//从左往右的斜线
+			else if(coorX == coorY && Y2 < Y1){return 'RightLeft';}//从右往左的斜线
+			else if(coorX == 0){return 'horizontalLine';}//横线
+			else if(coorY == 0){return 'verticalLine';}//竖线			
 		}
-			
+		function  legitimateBtn(){//判断中间扣子是不是合法
+			if ($('#' + tmpBox[tmpBox.length-1]).children().length == 0) {//中间没有扣子,删除最后一个进来的
+				tmpBox.pop();
+			}
+			else if($('#' + tmpBox[tmpBox.length-1]).children().attr("class") != color1){//夹在中间的扣子颜色不一致,点击无效
+				tmpBox.length = 0;
+				//break;
+			};
+		}
+		function switchDire(){//不同方向不同对策
+			switch(judgementDire()){
+				case 'leftRight'://alert('从左往右的斜线');
+					for (var i = 0; i <=step - 1; i++) {
+						tmpBox.push('l' + (X1 + i + 1) + (Y1 + i + 1));
+						legitimateBtn();
+					};
+					cutYesNo();
+				break;
+				case 'RightLeft'://alert('从右往左的斜线');
+					for (var i = 0; i <=step - 1; i++) {
+						tmpBox.push('l' + (X1 + i + 1) + (Y1 - i - 1));
+						legitimateBtn();
+					};
+					cutYesNo();
+				break;
+				case 'horizontalLine'://alert('横线');
+					for (var i = 0; i <=step - 1; i++) {
+						tmpBox.push('l' + coordinate1x + (Y1 + i + 1));
+						legitimateBtn();
+					};
+					cutYesNo();
+				break;
+				case 'verticalLine'://alert('竖线');
+					for (var i = 0; i <=step - 1; i++) {
+						tmpBox.push('l' + (X1 + i + 1) + coordinate1y);
+						legitimateBtn();
+					};
+					cutYesNo();
+				break;
+			}
+		}		
 	}
 	//获取始末两点
 	function addCoordinate(){		
@@ -89,49 +104,50 @@ $(document).ready(function(){
 	}
 	//判断两次点击是否合法
 	function yesNo(){
-			coordinate1x = coordinate1.substring(1,2);
-			coordinate1y = coordinate1.substring(2,3);
-			coordinate2x = coordinate2.substring(1,2);
-			coordinate2y = coordinate2.substring(2,3);
-			//取横坐标的绝对值
-			var coorX = (coordinate2x - coordinate1x) < 0 ? coordinate1x - coordinate2x : coordinate2x - coordinate1x;
-			//取纵坐标的绝对值
-			var coorY = (coordinate2y - coordinate1y) < 0 ? coordinate1y - coordinate2y : coordinate2y - coordinate1y;
-			//判断是否为直线
-			if (coorX==coorY) {//是对角线
-				//判断两个点之间是否有其他的点
-				if(coorX ==1)//说明两个点相邻
-				{
+		coordinate1x = coordinate1.substring(1,2);
+		coordinate1y = coordinate1.substring(2,3);
+		coordinate2x = coordinate2.substring(1,2);
+		coordinate2y = coordinate2.substring(2,3);
+		//取横坐标的绝对值
+		var coorX = (coordinate2x - coordinate1x) < 0 ? coordinate1x - coordinate2x : coordinate2x - coordinate1x;
+		//取纵坐标的s绝对值
+		var coorY = (coordinate2y - coordinate1y) < 0 ? coordinate1y - coordinate2y : coordinate2y - coordinate1y;
+		//判断是否为直线
+		if (coorX==coorY) {//是对角线
+			//判断两个点之间是否有其他的点
+			if(coorX ==1)//说明两个点相邻
+			{
+				addCoordinate();
+				cutBtnFlash(2);
+			}
+			else{//不相邻(coorX == coorY >2)
+				getDiagonalBtns(coorX, coorY);
+				//alert("对角但是不相邻");
+				clearData();
+			}
+		}
+		if(coorX==0||coorY==0){//是竖线或者横线
+			if(coorX == 0){//横线
+				if(coorY == 1){//相邻
 					addCoordinate();
 					cutBtnFlash(2);
 				}
-				else{//不相邻
-					alert("对角但是不相邻");
-					clearData();
+				else{//不相邻(coorX == 0 coorY >= 2)
+					getDiagonalBtns(coorX, coorY);
 				}
 			}
-			if(coorX==0||coorY==0){//是竖线或者横线
-				if(coorX == 0){//横线
-					if(coorY == 1){//相邻
-						addCoordinate();
-						cutBtnFlash(2);
-					}
-					else{//不相邻
-						getButtons(coorX,coorY);
-					}
+			else{//竖线
+				if(coorX == 1){//相邻
+					addCoordinate();
+					cutBtnFlash(2);
 				}
-				else{//竖线
-					if(coorX == 1){//相邻
-						addCoordinate();
-						cutBtnFlash(2);
-					}
-					else{//不相邻
-						getButtons(coorX,coorY);
-					}
+				else{//不相邻(coorX <= 2 coorY == 0)
+					getDiagonalBtns(coorX, coorY);
 				}
-			}	
+			}
+		}	
 	}
-	//清空数据，从头开始
+	//清空数据,从头开始
 	function clearData(){
 		$("#"+coordinate2).add($("#"+coordinate1)).removeClass("active");//取消选择
 		color1 = color2 = coordinate1 = coordinate2 = "";
