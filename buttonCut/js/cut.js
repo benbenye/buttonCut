@@ -1,4 +1,7 @@
 $(document).ready(function(){
+	function init(){
+		
+	}
 	var color1 = "",
 		color2 = "",//两次鼠标点击对象的颜色
 		coordinate1 = "",
