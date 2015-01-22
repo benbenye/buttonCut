@@ -1,0 +1,12 @@
+
+#mainBox{width: 375px; height: 375px; padding: 5px; margin: -185px 0 0 -185px; background: url(../images/bg.png); position: absolute; top: 50%; left: 50%;}
+.mainUl{width: 375px; height: 375px;}
+.mainUl li{width: 75px; height: 75px; float: left; display: inline;}
+.mainUl li span {width: 75px; height: 75px; display: block; cursor: pointer;}
+.mainUl li span.r{background: url(../images/btnRgbSmall.png) 0 -518px;}
+.mainUl li span.g{background: url(../images/btnRgbSmall.png) 0 -174px;}
+.mainUl li span.b{background: url(../images/btnRgbSmall.png) 0 0px;}
+.mainUl li span.o{background: url(../images/btnRgbSmall.png) 0 -346px;}
+.mainUl li span.y{background: url(../images/btnRgbSmall.png) 0 -690px;}
+.mainUl li.fork{background: url(../images/btnRgbSmall.png) 0 -875px;}
+.mainUl li.active{background: url(../images/btnRgbSmall.png) 0 -795px;}
