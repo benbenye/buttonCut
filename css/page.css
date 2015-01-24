@@ -1,12 +1,12 @@
 
 #mainBox{width: 100%; padding: 5px; background: url(../images/bg.png);}
 .mainUl{position: relative;}
-.mainUl li{position: absolute;}
-.mainUl li span {width: 100%; display: block; cursor: pointer;background-image: url(../images/btnRgbSmall.png); background-repeat: no-repeat; background-size: 100%;}
+.mainUl li{position: absolute;background-image: url(../images/btnRGBSmall.png); background-repeat: no-repeat; background-size: 100%; background-position: -100% -100%;}
+.mainUl li span {width: 100%; display: block; cursor: pointer;background-image: url(../images/btnRGBSmall.png); background-repeat: no-repeat; background-size: 100%;}
 .mainUl li span.c0{background-position: 0 -0.1%;}
 .mainUl li span.c1{background-position: 0 19.9%;}
 .mainUl li span.c2{background-position: 0 39.6%;}
 .mainUl li span.c3{background-position: 0 59.3%;}
 .mainUl li span.c4{background-position: 0 79%;}
 .mainUl li.fork{background-position: 0 -875px;}
-.mainUl li.active{background-position: 0 -795px;}
+.mainUl li.active{background-position: 0 90.9%;}
