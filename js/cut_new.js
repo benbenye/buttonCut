@@ -13,7 +13,7 @@ $(function(){
 	function BtnBoard(h, v, n,windowWid){
 		this.dimensionHorizon = h;
 		this.dimensionVertical = v;
-		this.colors = n;
+		this.colorNums = n;
 		this.windowWid = windowWid;
 		this.fromTo = [];
 	}
@@ -38,7 +38,7 @@ $(function(){
 		for(var i = 0; i < this.dimensionVertical; ++i){
 			for(var j = 0; j <this.dimensionHorizon; ++j){
 				// 随机棋盘
-				this.btnArr[j][i] = Math.floor(Math.random() * this.colors);
+				this.btnArr[j][i] = Math.floor(Math.random() * this.colorNums);
 				var _widPer = 100/this.dimensionHorizon,
 					_hei = (this.windowWid/this.dimensionHorizon),
 					_top = _hei * i,
@@ -50,45 +50,59 @@ $(function(){
 		$('#mainUl').html(_temDom);
 	};
 
+	BtnBoard.prototype.cutBtn = function(obj, arr){
+		for(var i = 0, l = arr.length; i < l; ++i){
+			obj.btnArr[arr[i].x][arr[i].y] = null;
+			// delete dom
+			$('.btn').eq(arr[i].y * obj.dimensionHorizon + arr[i].x).remove();
+		}
+	};
+
 	var bo = new BtnBoard(8,4,5,$(window).width());
 	bo._init();
-
+	window.bo = bo;	
 	$('.btn').on('click',function(){
 		var i = $(this).index(),
 			x = i % bo.dimensionHorizon,
-			y = i / bo.dimensionHorizon,
+			y = Math.floor(i / bo.dimensionHorizon),
 			btnObj = {
-				x : i % bo.dimensionHorizon,
-				y : Math.floor(i / bo.dimensionHorizon),
-				color : bo.btnArr[x][y]
+				x : x,
+				y : y,
+				colorNum : bo.btnArr[x][y]
 			};
-
+		console.log(btnObj);
+		console.log(bo.btnArr);
 		if(bo.fromTo.length === 0){
 			// 新游戏
 			bo.fromTo.push(btnObj);
 			// addSeleClass();
 			$(this).addClass('active');
 		}else{
-			// if the color is same
-			if(bo.fromTo[0].color === btnObj.color){
+			// if the colorNum is same
+			if(bo.fromTo[0].colorNum === btnObj.colorNum){
 				if(bo.fromTo[0].x === btnObj.x){
 					var _tempArr = [];
 					_tempArr.push(bo.fromTo[0]);
 					for(var i = Math.min(bo.fromTo[0].y, btnObj.y), l = Math.abs(bo.fromTo[0].y - btnObj.y); i < l; ++i){
 						console.log(i+':'+l);
-						if(bo.btnArr[btnObj.x][i] !== btnObj.color){
-							console.log('color is diffrent');
+						if(bo.btnArr[btnObj.x][i] !== btnObj.colorNum){
+							console.log('there is diffrent btn in the one line');
 							$(this).addClass('active').siblings().removeClass('active');
 							bo.fromTo[0] = btnObj;
 							_tempArr = [];
 							break;
 						}else{
-							_tempArr.push(bo.btnArr[btnObj.x][i]);
+							_tempArr.push({
+								x : btnObj.x,
+								y : i,
+								colorNum : bo.btnArr[btnObj.x][i]
+							});
 						}
 					}
 					if(_tempArr.length){
+						_tempArr.push(btnObj);
 						console.log(_tempArr);
-						cutBtn();
+						bo.cutBtn(bo, _tempArr);
 					}else{
 						// return the one btn is selected
 						return;
@@ -104,7 +118,7 @@ $(function(){
 					return;
 				}
 			}else{
-				console.log('color is diffrent!');
+				console.log('colorNum is diffrent!');
 				$(this).addClass('active').siblings().removeClass('active');
 				bo.fromTo[0] = btnObj;
 				return;

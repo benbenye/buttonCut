@@ -1,5 +1,5 @@
-
-#mainBox{width: 100%; padding: 5px; background: url(../images/bg.png);}
+html,body,#mainBox{height: 100%;}
+#mainBox{width: 100%; background: url(../images/bg.png);}
 .mainUl{position: relative;}
 .mainUl li{position: absolute;background-image: url(../images/btnRGBSmall.png); background-repeat: no-repeat; background-size: 100%; background-position: -100% -100%;}
 .mainUl li span {width: 100%; display: block; cursor: pointer;background-image: url(../images/btnRGBSmall.png); background-repeat: no-repeat; background-size: 100%;}
