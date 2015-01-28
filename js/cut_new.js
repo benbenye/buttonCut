@@ -16,6 +16,7 @@ $(function(){
 		this.colorNums = n;
 		this.windowWid = windowWid;
 		this.fromTo = [];
+		this.needCutBtnArr = [];
 	}
 
 	BtnBoard.prototype._init = function() {
@@ -58,6 +59,110 @@ $(function(){
 		}
 	};
 
+	BtnBoard.prototype.cutUI = {
+		addBtnSelected : function(x, y, that){
+			var i = y * that.dimensionHorizon + x;
+			$('.btn:eq('+i+')').addClass('active').siblings().removeClass('active');
+		},
+		deleteDom : function(that){
+			for(var i = 0, l = that.needCutBtnArr.length; i < l; ++i){
+				console.log();
+				var o = that.needCutBtnArr[i].y * that.dimensionHorizon + that.needCutBtnArr[i].x,
+					o = '.btn:eq('+o+')';
+				console.log($('.btn:eq('+o+')'));
+				$(o).hide();
+			}
+			that.fromTo = [];
+			that.needCutBtnArr = [];
+		}
+	};
+
+	BtnBoard.prototype.canCutBtn = function(btnObj){
+
+		if(this.fromTo.length === 0){
+			// 新游戏
+			this.fromTo.push(btnObj);
+			// addSeleClass();
+			console.log('s1');
+			this.cutUI.addBtnSelected(btnObj.x, btnObj.y, this);
+		}else{
+			// 如果颜色相同
+			if(this.fromTo[0].colorNum === btnObj.colorNum){
+				// 都在x轴上
+				if(this.fromTo[0].x === btnObj.x){
+					this.needCutBtnArr.push(this.fromTo[0]);
+					for(var i = Math.min(this.fromTo[0].y, btnObj.y) + 1, l = Math.abs(this.fromTo[0].y - btnObj.y); i < l; ++i){
+						console.log(i+':'+l);
+						if(this.btnArr[btnObj.x][i] && this.btnArr[btnObj.x][i] !== btnObj.colorNum){
+							console.log('中间有不同颜色的扣子');
+							this.cutUI.addBtnSelected(btnObj.x, btnObj.y);
+							this.fromTo[0] = btnObj;
+							this.needCutBtnArr = [];
+							break;
+						}else{
+							this.needCutBtnArr.push({
+								x : btnObj.x,
+								y : i,
+								colorNum : this.btnArr[btnObj.x][i]
+							});
+						}
+					}
+
+					if(this.needCutBtnArr.length){
+						this.needCutBtnArr.push(btnObj);
+						console.log(this.needCutBtnArr);
+						return true;
+					}else{
+						return false;
+					}
+				}else if(this.fromTo[0].y === btnObj.y){
+					this.needCutBtnArr.push(this.fromTo[0]);
+					for(var i = Math.min(this.fromTo[0].x, btnObj.x) + 1, l = Math.abs(this.fromTo[0].x - btnObj.x); i < l; ++i){
+						if(this.btnArr[i][btnObj.y] !== btnObj.colorNum){
+							console.log('中间有不同颜色的扣子');//空位置怎么办了？
+							this.cutUI.addBtnSelected(btnObj.x, btnObj.y);
+							this.fromTo[0] = btnObj;
+							this.needCutBtnArr = [];
+							break;
+						}else{
+							this.needCutBtnArr.push({
+								x : i,
+								y : btnObj.y,
+								colorNum : this.btnArr[i][btnObj.y]
+							});
+						}
+					}
+					if(this.needCutBtnArr.length){
+						this.needCutBtnArr.push(btnObj);
+						return true;
+					}else{
+						return false;
+					}
+				}else if(Math.abs(this.fromTo[0].x - btnObj.x) === Math.abs(this.fromTo[0].y - btnObj.y)){
+
+				}else{
+					console.log('not a line!');
+					$(this).addClass('active').siblings().removeClass('active');
+					this.fromTo[0] = btnObj;
+					return;
+				}
+			}else{
+				console.log('colorNum is diffrent!');
+				$(this).addClass('active').siblings().removeClass('active');
+				this.fromTo[0] = btnObj;
+				return;
+			}	
+		}
+	};
+
+	BtnBoard.prototype.cutBtn = function(){
+		// 删除二维数组里面对应的btn
+		for(var i = 0, l = this.needCutBtnArr.length; i < l; ++i){
+			this.btnArr[this.needCutBtnArr[i].x][this.needCutBtnArr[i].y] = null;
+		}
+		this.cutUI.deleteDom(this);
+	};
+
 	var bo = new BtnBoard(8,4,5,$(window).width());
 	bo._init();
 	window.bo = bo;	
@@ -70,60 +175,13 @@ $(function(){
 				y : y,
 				colorNum : bo.btnArr[x][y]
 			};
-		console.log(btnObj);
-		console.log(bo.btnArr);
-		if(bo.fromTo.length === 0){
-			// 新游戏
-			bo.fromTo.push(btnObj);
-			// addSeleClass();
-			$(this).addClass('active');
+
+		if(bo.canCutBtn(btnObj)){
+			// 符合
+			console.log('ok');
+			bo.cutBtn();
 		}else{
-			// if the colorNum is same
-			if(bo.fromTo[0].colorNum === btnObj.colorNum){
-				if(bo.fromTo[0].x === btnObj.x){
-					var _tempArr = [];
-					_tempArr.push(bo.fromTo[0]);
-					for(var i = Math.min(bo.fromTo[0].y, btnObj.y), l = Math.abs(bo.fromTo[0].y - btnObj.y); i < l; ++i){
-						console.log(i+':'+l);
-						if(bo.btnArr[btnObj.x][i] !== btnObj.colorNum){
-							console.log('there is diffrent btn in the one line');
-							$(this).addClass('active').siblings().removeClass('active');
-							bo.fromTo[0] = btnObj;
-							_tempArr = [];
-							break;
-						}else{
-							_tempArr.push({
-								x : btnObj.x,
-								y : i,
-								colorNum : bo.btnArr[btnObj.x][i]
-							});
-						}
-					}
-					if(_tempArr.length){
-						_tempArr.push(btnObj);
-						console.log(_tempArr);
-						bo.cutBtn(bo, _tempArr);
-					}else{
-						// return the one btn is selected
-						return;
-					}
-				}else if(bo.fromTo[0].y === btnObj.y){
-
-				}else if(Math.abs(bo.fromTo[0].x - btnObj.x) === Math.abs(bo.fromTo[0].y - btnObj.y)){
-
-				}else{
-					console.log('not a line!');
-					$(this).addClass('active').siblings().removeClass('active');
-					bo.fromTo[0] = btnObj;
-					return;
-				}
-			}else{
-				console.log('colorNum is diffrent!');
-				$(this).addClass('active').siblings().removeClass('active');
-				bo.fromTo[0] = btnObj;
-				return;
-			}
-			
+			//  do nothing
 		}
 	});
 
