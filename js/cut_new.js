@@ -100,7 +100,7 @@ $(function(){
 							continue;
 						}else if(this.btnArr[btnObj.x][i] && this.btnArr[btnObj.x][i] !== btnObj.colorNum){
 							console.log('中间有不同颜色的扣子');
-							this.cutUI.addBtnSelected(btnObj.x, btnObj.y);
+							this.cutUI.addBtnSelected(btnObj.x, btnObj.y, this);
 							this.fromTo[0] = btnObj;
 							this.needCutBtnArr = [];
 							break;
@@ -128,7 +128,7 @@ $(function(){
 							continue;
 						}else if(this.btnArr[i][btnObj.y] !== btnObj.colorNum){
 							console.log('中间有不同颜色的扣子');
-							this.cutUI.addBtnSelected(btnObj.x, btnObj.y);
+							this.cutUI.addBtnSelected(btnObj.x, btnObj.y, this);
 							this.fromTo[0] = btnObj;
 							this.needCutBtnArr = [];
 							break;
@@ -158,10 +158,12 @@ $(function(){
 								y1 = Math.min(this.fromTo[0].y, btnObj.y),
 								y2 = Math.max(this.fromTo[0].y, btnObj.y);
 								x1 <= x2 && y1 <= y2;){
-							if(this.btnArr[x1][y1] !== +this.btnArr[x1][y1]){
+							if(this.btnArr[x1][y1] !== +this.btnArr[x1][y1] ){
+								++x1;
+								++y1;
 								continue;
 							}else if(this.btnArr[x1][y1] !== btnObj.colorNum){
-								this.cutUI.addBtnSelected(btnObj.x, btnObj.y);
+								this.cutUI.addBtnSelected(btnObj.x, btnObj.y,this);
 								this.fromTo[0] = btnObj;
 								this.needCutBtnArr = [];
 								break;
@@ -182,9 +184,11 @@ $(function(){
 								y1 = Math.max(this.fromTo[0].y, btnObj.y);
 								x1 <= x2 && y1 >= y2;){
 							if(this.btnArr[x1][y1] !== +this.btnArr[x1][y1]){
+								++x1;
+								--y1;
 								continue;
 							}else if(this.btnArr[x1][y1] !== btnObj.colorNum){
-								this.cutUI.addBtnSelected(btnObj.x, btnObj.y);
+								this.cutUI.addBtnSelected(btnObj.x, btnObj.y,this);
 								this.fromTo[0] = btnObj;
 								this.needCutBtnArr = [];
 								break;
@@ -206,13 +210,13 @@ $(function(){
 						}
 				}else{
 					console.log('not a line!');
-					$(this).addClass('active').siblings().removeClass('active');
+					this.cutUI.addBtnSelected(btnObj.x, btnObj.y,this)
 					this.fromTo[0] = btnObj;
 					return;
 				}
 			}else{
 				console.log('colorNum is diffrent!');
-				$(this).addClass('active').siblings().removeClass('active');
+				this.cutUI.addBtnSelected(btnObj.x, btnObj.y,this)
 				this.fromTo[0] = btnObj;
 				return;
 			}	
