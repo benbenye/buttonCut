@@ -85,6 +85,9 @@ $(function(){
 			// addSeleClass();
 			console.log('s1');
 			this.cutUI.addBtnSelected(btnObj.x, btnObj.y, this);
+		}else if(this.fromTo[0].x === btnObj.x && this.fromTo[0].y === btnObj.y){
+			// 点击的同一个扣子
+			return;
 		}else{
 			// 如果颜色相同
 			if(this.fromTo[0].colorNum === btnObj.colorNum){
@@ -93,7 +96,9 @@ $(function(){
 					this.needCutBtnArr.push(this.fromTo[0]);
 					for(var i = Math.min(this.fromTo[0].y, btnObj.y) + 1, l = Math.abs(this.fromTo[0].y - btnObj.y); i < l; ++i){
 						console.log(i+':'+l);
-						if(this.btnArr[btnObj.x][i] && this.btnArr[btnObj.x][i] !== btnObj.colorNum){
+						if(!this.btnArr[btnObj.x][i]){
+							continue;
+						}else if(this.btnArr[btnObj.x][i] && this.btnArr[btnObj.x][i] !== btnObj.colorNum){
 							console.log('中间有不同颜色的扣子');
 							this.cutUI.addBtnSelected(btnObj.x, btnObj.y);
 							this.fromTo[0] = btnObj;
@@ -118,7 +123,11 @@ $(function(){
 				}else if(this.fromTo[0].y === btnObj.y){
 					this.needCutBtnArr.push(this.fromTo[0]);
 					for(var i = Math.min(this.fromTo[0].x, btnObj.x) + 1, l = Math.abs(this.fromTo[0].x - btnObj.x); i < l; ++i){
-						if(this.btnArr[i][btnObj.y] !== btnObj.colorNum){
+						console.log(this.btnArr[i][btnObj.y]);
+						if(!this.btnArr[i][btnObj.y]){
+							console.log('kong')
+							continue;
+						}else if(this.btnArr[i][btnObj.y] !== btnObj.colorNum){
 							console.log('中间有不同颜色的扣子');//空位置怎么办了？
 							this.cutUI.addBtnSelected(btnObj.x, btnObj.y);
 							this.fromTo[0] = btnObj;
@@ -134,6 +143,7 @@ $(function(){
 					}
 					if(this.needCutBtnArr.length){
 						this.needCutBtnArr.push(btnObj);
+						console.log(this.needCutBtnArr);
 						return true;
 					}else{
 						return false;
