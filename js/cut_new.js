@@ -94,9 +94,9 @@ $(function(){
 				// 都在x轴上
 				if(this.fromTo[0].x === btnObj.x){
 					this.needCutBtnArr.push(this.fromTo[0]);
-					for(var i = Math.min(this.fromTo[0].y, btnObj.y) + 1, l = Math.abs(this.fromTo[0].y - btnObj.y); i < l; ++i){
+					for(var i = Math.min(this.fromTo[0].y, btnObj.y), l = Math.max(this.fromTo[0].y, btnObj.y); i <= l; ++i){
 						console.log(i+':'+l);
-						if(!this.btnArr[btnObj.x][i]){
+						if(this.btnArr[btnObj.x][i] !== +this.btnArr[btnObj.x][i]){
 							continue;
 						}else if(this.btnArr[btnObj.x][i] && this.btnArr[btnObj.x][i] !== btnObj.colorNum){
 							console.log('中间有不同颜色的扣子');
@@ -121,14 +121,13 @@ $(function(){
 						return false;
 					}
 				}else if(this.fromTo[0].y === btnObj.y){
-					this.needCutBtnArr.push(this.fromTo[0]);
-					for(var i = Math.min(this.fromTo[0].x, btnObj.x) + 1, l = Math.abs(this.fromTo[0].x - btnObj.x); i < l; ++i){
+					for(var i = Math.min(this.fromTo[0].x, btnObj.x), l = Math.max(this.fromTo[0].x, btnObj.x); i <= l; ++i){
 						console.log(this.btnArr[i][btnObj.y]);
-						if(!this.btnArr[i][btnObj.y]){
+						if(this.btnArr[i][btnObj.y] !== +this.btnArr[i][btnObj.y]){//空位置怎么办了？
 							console.log('kong')
 							continue;
 						}else if(this.btnArr[i][btnObj.y] !== btnObj.colorNum){
-							console.log('中间有不同颜色的扣子');//空位置怎么办了？
+							console.log('中间有不同颜色的扣子');
 							this.cutUI.addBtnSelected(btnObj.x, btnObj.y);
 							this.fromTo[0] = btnObj;
 							this.needCutBtnArr = [];
@@ -142,14 +141,69 @@ $(function(){
 						}
 					}
 					if(this.needCutBtnArr.length){
-						this.needCutBtnArr.push(btnObj);
+						// this.needCutBtnArr.push(btnObj);
 						console.log(this.needCutBtnArr);
 						return true;
 					}else{
 						return false;
 					}
 				}else if(Math.abs(this.fromTo[0].x - btnObj.x) === Math.abs(this.fromTo[0].y - btnObj.y)){
-
+					console.log('斜对角线');
+					console.log(this.fromTo[0])
+					console.log(btnObj)
+					if(this.fromTo[0].x - btnObj.x === this.fromTo[0].y - btnObj.y){
+						// 斜向下的对角线
+						for(var x1 = Math.min(this.fromTo[0].x, btnObj.x),
+								x2 = Math.max(this.fromTo[0].x, btnObj.x),
+								y1 = Math.min(this.fromTo[0].y, btnObj.y),
+								y2 = Math.max(this.fromTo[0].y, btnObj.y);
+								x1 <= x2 && y1 <= y2;){
+							if(this.btnArr[x1][y1] !== +this.btnArr[x1][y1]){
+								continue;
+							}else if(this.btnArr[x1][y1] !== btnObj.colorNum){
+								this.cutUI.addBtnSelected(btnObj.x, btnObj.y);
+								this.fromTo[0] = btnObj;
+								this.needCutBtnArr = [];
+								break;
+							}else{
+								this.needCutBtnArr.push({
+									x : x1,
+									y : y1,
+									colorNum : btnObj.colorNum
+								});
+							}
+							++x1;
+							++y1;
+						}
+					}else{
+						for(var x1 = Math.min(this.fromTo[0].x, btnObj.x),
+								x2 = Math.max(this.fromTo[0].x, btnObj.x),
+								y2 = Math.min(this.fromTo[0].y, btnObj.y),
+								y1 = Math.max(this.fromTo[0].y, btnObj.y);
+								x1 <= x2 && y1 >= y2;){
+							if(this.btnArr[x1][y1] !== +this.btnArr[x1][y1]){
+								continue;
+							}else if(this.btnArr[x1][y1] !== btnObj.colorNum){
+								this.cutUI.addBtnSelected(btnObj.x, btnObj.y);
+								this.fromTo[0] = btnObj;
+								this.needCutBtnArr = [];
+								break;
+							}else{
+								this.needCutBtnArr.push({
+									x : x1,
+									y : y1,
+									colorNum : btnObj.colorNum
+								});
+							}
+							++x1;
+							--y1;
+						}
+					}
+						if(this.needCutBtnArr.length){
+							return true;
+						}else{
+							return false;
+						}
 				}else{
 					console.log('not a line!');
 					$(this).addClass('active').siblings().removeClass('active');
