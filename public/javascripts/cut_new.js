@@ -264,5 +264,20 @@ $(function(){
 			})
 		});
 		$('.btn span').height(_wid);
+	});
+	// 不好意思借用一下位置，先写在这里
+	// 提交用户昵称之后才开始游戏
+	$('#submit').on('click', function(){
+		var _name = $('#input').val();
+		if(!_name){
+			alert('请输入昵称以开始游戏！');
+		}else{
+			$.post('/postuser', {name:_name},function(data){
+				if(data){
+					console.log(data);
+					$('#mainBox').show();
+				}
+			});
+		}
 	})
 });

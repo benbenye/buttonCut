@@ -2,14 +2,12 @@ var mongoose = require('mongoose'),
 	Schema = mongoose.Schema,
 	ObjectId = Schema.ObjectId;
 
-console.log(mongoose);
-
 var UserSchema = new Schema({
 	name:         String,
 	score:        Number,
 	level:        Number
 });
-var User = mongoose.model('User', UserSchema);
+var userModel = mongoose.model('User', UserSchema);
 
 function User(user){
 	this.name = user.name;
@@ -18,6 +16,7 @@ function User(user){
 }
 
 User.prototype.save = function(cb){
+	console.log(this);
 	var _user = {
 		name: this.user,
 		score: this.score || 0,
@@ -31,3 +30,4 @@ User.prototype.save = function(cb){
 		cb(null, book);
 	})
 };
+module.exports = userModel;
