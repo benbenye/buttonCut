@@ -1,7 +1,15 @@
 var mongoose = require('mongoose'),
 	Schema = mongoose.Schema,
 	ObjectId = Schema.ObjectId;
-
+if (mongoose.readyState === 0 || mongoose.readyState === undefined) {
+    mongoose.connect('mongodb://127.0.0.1:27017/cutbtn', function(err){
+        if(!err){
+            console.log('connected to mongoDB');
+        }else{
+            throw err;
+        }
+    });
+}
 var UserSchema = new Schema({
 	name:         String,
 	score:        Number,
@@ -16,7 +24,7 @@ function User(user){
 }
 
 User.prototype.save = function(cb){
-	console.log(this);
+	// console.log(this);
 	var _user = {
 		name: this.user,
 		score: this.score || 0,

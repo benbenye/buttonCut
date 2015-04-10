@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 var User = require('../modules/btns.js');
-console.log(User);
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
