@@ -30,6 +30,7 @@ User.prototype.save = function(cb){
 		score: this.score || 0,
 		level: this.level || 0
 	};
+	console.log('ok');
 	var newUser = new userModel(_user);
 	newUser.save(function(err, _user){
 		if(err){
