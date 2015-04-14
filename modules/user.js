@@ -39,4 +39,8 @@ User.prototype.save = function(cb){
 		cb(null, book);
 	})
 };
+
+User.prototype.checkName = function(cb){
+	
+};
 module.exports = userModel;

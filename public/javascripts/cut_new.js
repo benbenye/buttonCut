@@ -16,38 +16,65 @@ $(function(){
 		this.windowWid = windowWid;
 		this.fromTo = [];
 		this.needCutBtnArr = [];
+		this._init();
 	}
 
 	BtnBoard.prototype._init = function() {
 		// 初始化棋盘
-		if(this.dimensionHorizon === +this.dimensionHorizon && this.dimensionVertical === +this.dimensionVertical){
+		var _this = this;
+		if(_this.dimensionHorizon === +_this.dimensionHorizon && _this.dimensionVertical === +_this.dimensionVertical){
 
-			this.btnArr = new Array();
+			_this.btnArr = new Array();
 
 		}else{
 
-			this.dimensionHorizon = this.dimensionVertical = 4;
-			this.btnArr = new Array();
+			_this.dimensionHorizon = _this.dimensionVertical = 4;
+			_this.btnArr = new Array();
 		}
-		for(var i = 0; i < this.dimensionHorizon; ++i){
-			this.btnArr[i] = new Array();
+		for(var i = 0; i < _this.dimensionHorizon; ++i){
+			_this.btnArr[i] = new Array();
 		}
 
 		// 渲染到dom,<li id="l04"><span class="r"></span></li>
 		var _temDom = '';
-		for(var i = 0; i < this.dimensionVertical; ++i){
-			for(var j = 0; j <this.dimensionHorizon; ++j){
+		for(var i = 0; i < _this.dimensionVertical; ++i){
+			for(var j = 0; j <_this.dimensionHorizon; ++j){
 				// 随机棋盘
-				this.btnArr[j][i] = Math.floor(Math.random() * this.colorNums);
-				var _widPer = 100/this.dimensionHorizon,
-					_hei = (this.windowWid/this.dimensionHorizon),
+				_this.btnArr[j][i] = Math.floor(Math.random() * _this.colorNums);
+				var _widPer = 100/_this.dimensionHorizon,
+					_hei = (_this.windowWid/_this.dimensionHorizon),
 					_top = _hei * i,
 					_left = _widPer * j;
-				_temDom += '<li class="btn" style="width:'+_widPer+'%; top:'+_top+'px; left:'+_left+'%"><span class="c'+this.btnArr[j][i]+'" style="height:'+_hei+'px"></span></li>'
+				_temDom += '<li class="btn" style="width:'+_widPer+'%; top:'+_top+'px; left:'+_left+'%"><span class="c'+_this.btnArr[j][i]+'" style="height:'+_hei+'px"></span></li>'
 			}
 		}
 
 		$('#mainUl').html(_temDom);
+		_this.onEventClick('.btn');
+
+	};
+
+	BtnBoard.prototype.onEventClick = function(elem) {
+		var _dom = $(elem) || elem,
+			_this = this;
+		_dom.on('click', function(){
+			i = $(this).index(),
+			x = i % _this.dimensionHorizon,
+			y = Math.floor(i / _this.dimensionHorizon),
+			btnObj = {
+				x : x,
+				y : y,
+				colorNum : _this.btnArr[x][y]
+			};
+
+			if(_this.canCutBtn(btnObj)){
+				// 符合
+				console.log('ok');
+				_this.cutBtn();
+			}else{
+				//  do nothing
+			}
+		});
 	};
 
 	BtnBoard.prototype.cutBtn = function(obj, arr){
@@ -229,28 +256,29 @@ $(function(){
 		}
 		this.cutUI.deleteDom(this);
 	};
-
+	window.BtnBoard = BtnBoard;
 	var bo = new BtnBoard(8,4,5,$(window).width());
-	bo._init();
-	window.bo = bo;	
-	$('.btn').on('click',function(){
-		var i = $(this).index(),
-			x = i % bo.dimensionHorizon,
-			y = Math.floor(i / bo.dimensionHorizon),
-			btnObj = {
-				x : x,
-				y : y,
-				colorNum : bo.btnArr[x][y]
-			};
+	// bo._init();
+	window.bo = bo;
 
-		if(bo.canCutBtn(btnObj)){
-			// 符合
-			console.log('ok');
-			bo.cutBtn();
-		}else{
-			//  do nothing
-		}
-	});
+	// $('.btn').on('click',function(){
+	// 	var i = $(this).index(),
+	// 		x = i % bo.dimensionHorizon,
+	// 		y = Math.floor(i / bo.dimensionHorizon),
+	// 		btnObj = {
+	// 			x : x,
+	// 			y : y,
+	// 			colorNum : bo.btnArr[x][y]
+	// 		};
+
+	// 	if(bo.canCutBtn(btnObj)){
+	// 		// 符合
+	// 		console.log('ok');
+	// 		bo.cutBtn();
+	// 	}else{
+	// 		//  do nothing
+	// 	}
+	// });
 
 	$(window).resize(function(){
 		var _wid = $('.btn').width(),
