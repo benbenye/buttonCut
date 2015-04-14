@@ -2,35 +2,41 @@ $(function(){
 	/*
 	* powered by bby
 	* https://github.com/benbenye
+	* http://blog.csdn.net/wmzy1067111110
 	*/
 
 	/*
 	*@name   棋盘
 	*@parame h  横向维度
 	*@parame v  纵向维度
+	*@parame n  棋子颜色种类数
+	*@parame boxWid  棋盘宽度，用于当棋盘宽度发生变化时，调节棋盘布局（暂不使用）
 	*/
-	function BtnBoard(h, v, n,windowWid){
-		this.dimensionHorizon = h;
-		this.dimensionVertical = v;
-		this.colorNums = n;
-		this.windowWid = windowWid;
+	function BtnBoard(h, v, n,boxWid){
+		this.dimensionHorizon = h || 5;
+		this.dimensionVertical = v || 4;
+		this.colorNums = n || 3;
+		this.boxWid = boxWid || 320;
 		this.fromTo = [];
 		this.needCutBtnArr = [];
 		this._init();
 	}
 
 	BtnBoard.prototype._init = function() {
-		// 初始化棋盘
+		/*
+		* 初始化棋盘
+		* 实现棋盘的初始化
+		* 传入的维度参数不符合的话，使用默认维度
+		* onEventClick: dom渲染，绑定棋子的点击事件
+		*/
 		var _this = this;
-		if(_this.dimensionHorizon === +_this.dimensionHorizon && _this.dimensionVertical === +_this.dimensionVertical){
 
-			_this.btnArr = new Array();
-
-		}else{
+		if(!(_this.dimensionHorizon === +_this.dimensionHorizon && _this.dimensionVertical === +_this.dimensionVertical)){
 
 			_this.dimensionHorizon = _this.dimensionVertical = 4;
-			_this.btnArr = new Array();
 		}
+		_this.btnArr = new Array();
+
 		for(var i = 0; i < _this.dimensionHorizon; ++i){
 			_this.btnArr[i] = new Array();
 		}
@@ -42,16 +48,15 @@ $(function(){
 				// 随机棋盘
 				_this.btnArr[j][i] = Math.floor(Math.random() * _this.colorNums);
 				var _widPer = 100/_this.dimensionHorizon,
-					_hei = (_this.windowWid/_this.dimensionHorizon),
+					_hei = (_this.boxWid/_this.dimensionHorizon),
 					_top = _hei * i,
 					_left = _widPer * j;
 				_temDom += '<li class="btn" style="width:'+_widPer+'%; top:'+_top+'px; left:'+_left+'%"><span class="c'+_this.btnArr[j][i]+'" style="height:'+_hei+'px"></span></li>'
 			}
 		}
-
+		$('#mainBox').css({width:_this.boxWid});
 		$('#mainUl').html(_temDom);
 		_this.onEventClick('.btn');
-
 	};
 
 	BtnBoard.prototype.onEventClick = function(elem) {
@@ -69,22 +74,20 @@ $(function(){
 
 			if(_this.canCutBtn(btnObj)){
 				// 符合
-				console.log('ok');
 				_this.cutBtn();
-			}else{
-				//  do nothing
 			}
 		});
 	};
 
-	BtnBoard.prototype.cutBtn = function(obj, arr){
-		for(var i = 0, l = arr.length; i < l; ++i){
-			obj.btnArr[arr[i].x][arr[i].y] = null;
-			// delete dom
-			$('.btn').eq(arr[i].y * obj.dimensionHorizon + arr[i].x).remove();
-		}
-	};
-
+	/*
+	* 棋盘操作的UI层
+	* cutUI 只负责棋盘的UI层面的变化，不涉及到数据存储
+	* addBtnSelected: 给选中棋子添加选中效果
+	*               ====@parame   x    棋子的x坐标
+	*               ====@parame   y    棋子的y坐标
+	* deleteDom: 将符合条件的棋子从dom中删除
+	*               ====@parame   that  当前棋盘对象
+	*/
 	BtnBoard.prototype.cutUI = {
 		addBtnSelected : function(x, y, that){
 			var i = y * that.dimensionHorizon + x;
@@ -92,10 +95,8 @@ $(function(){
 		},
 		deleteDom : function(that){
 			for(var i = 0, l = that.needCutBtnArr.length; i < l; ++i){
-				console.log();
 				var o = that.needCutBtnArr[i].y * that.dimensionHorizon + that.needCutBtnArr[i].x,
 					o = '.btn:eq('+o+')';
-				console.log($('.btn:eq('+o+')'));
 				$(o).hide();
 			}
 			that.fromTo = [];
@@ -103,13 +104,16 @@ $(function(){
 		}
 	};
 
+	/*
+	* 判断两个棋子是否有效
+	* 借助this.formTo this.needCutBtnArr 两个数组
+	*@parame   btnObj    点击的最新的一个棋子
+	*/
 	BtnBoard.prototype.canCutBtn = function(btnObj){
 
 		if(this.fromTo.length === 0){
 			// 新游戏
 			this.fromTo.push(btnObj);
-			// addSeleClass();
-			console.log('s1');
 			this.cutUI.addBtnSelected(btnObj.x, btnObj.y, this);
 		}else if(this.fromTo[0].x === btnObj.x && this.fromTo[0].y === btnObj.y){
 			// 点击的同一个扣子
@@ -256,43 +260,19 @@ $(function(){
 		}
 		this.cutUI.deleteDom(this);
 	};
-	window.BtnBoard = BtnBoard;
-	var bo = new BtnBoard(8,4,5,$(window).width());
-	// bo._init();
-	window.bo = bo;
 
-	// $('.btn').on('click',function(){
-	// 	var i = $(this).index(),
-	// 		x = i % bo.dimensionHorizon,
-	// 		y = Math.floor(i / bo.dimensionHorizon),
-	// 		btnObj = {
-	// 			x : x,
-	// 			y : y,
-	// 			colorNum : bo.btnArr[x][y]
-	// 		};
+	// $(window).resize(function(){
+	// 	var _wid = $('.btn').width(),
+	// 		_hei = _wid/bo.dimensionHorizon;
 
-	// 	if(bo.canCutBtn(btnObj)){
-	// 		// 符合
-	// 		console.log('ok');
-	// 		bo.cutBtn();
-	// 	}else{
-	// 		//  do nothing
-	// 	}
+	// 	$('.btn').each(function(i){
+	// 		$(this).css({
+	// 			top : Math.floor(i / bo.dimensionHorizon) * _wid,
+	// 			left : i % bo.dimensionHorizon * _wid
+	// 		})
+	// 	});
+	// 	$('.btn span').height(_wid);
 	// });
-
-	$(window).resize(function(){
-		var _wid = $('.btn').width(),
-			_hei = _wid/bo.dimensionHorizon;
-			// _top = _hei * i,
-			// _left = _widPer * j;
-		$('.btn').each(function(i){
-			$(this).css({
-				top : Math.floor(i / bo.dimensionHorizon) * _wid,
-				left : i % bo.dimensionHorizon * _wid
-			})
-		});
-		$('.btn span').height(_wid);
-	});
 	// 不好意思借用一下位置，先写在这里
 	// 提交用户昵称之后才开始游戏
 	$('#submit').on('click', function(){
@@ -303,6 +283,7 @@ $(function(){
 			$.post('/postuser', {name:_name},function(data){
 				if(data){
 					console.log(data);
+					var bo = new BtnBoard(8,4,5,640);
 					$('#mainBox').show();
 				}
 			},'json');
