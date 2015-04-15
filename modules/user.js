@@ -40,7 +40,20 @@ User.prototype.save = function(cb){
 	})
 };
 
-User.prototype.checkName = function(cb){
-	
+User.checkName = function(obj, cb){
+	console.log('00');
+	// userModel.findOne({name:obj.name},function(err, user){
+	// 	if(err){
+	// 		return cb(err);
+	// 	}
+	// 	cb(null, {islogined:true});
+	// });
+
+		userModel.find({name:obj.name},function(err,user){
+	        if(err){
+	            return cb(err);
+	        }
+	        cb(null, {islogined:true});//book数组
+	    });
 };
-module.exports = userModel;
+module.exports = User;

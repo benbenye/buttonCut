@@ -281,8 +281,10 @@ $(function(){
 			alert('请输入昵称以开始游戏！');
 		}else{
 			$.post('/postuser', {name:_name},function(data){
-				if(data){
+				if(data.islogined){
 					console.log(data);
+					
+				}else{
 					var bo = new BtnBoard(8,4,5,640);
 					$('#mainBox').show();
 				}

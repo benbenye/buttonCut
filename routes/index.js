@@ -7,15 +7,30 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'bby剪扣子游戏' });
 });
 router.post('/postuser', function(req, res, next){
-	var newUser = new User({
-		name: req.body.name
-	});
-	console.log(newUser);
-	newUser.save(function(err, user){
+	console.log('ll');
+	
+	User.checkName({name:req.body.name},function(err, data){
+		console.log('1');
 		if(err){
-			console.log(err.message); 	
+			console.log(err.message);
 		}else{
-			res.send(user);
+			if(data.islogined){
+				// 已有此用户的信息
+				res.send({
+					islogined: true
+				});
+			}else{
+				var newUser = new User({
+					name: req.body.name
+				});
+				newUser.save(function(err, user){
+					if(err){
+						console.log(err.message); 	
+					}else{
+						res.send(user);
+					}
+				});
+			}
 		}
 	});
 });
