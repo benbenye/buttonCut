@@ -7,18 +7,13 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'bby剪扣子游戏' });
 });
 router.post('/postuser', function(req, res, next){
-	console.log('ll');
-	
 	User.checkName({name:req.body.name},function(err, data){
-		console.log('1');
 		if(err){
 			console.log(err.message);
 		}else{
 			if(data.islogined){
 				// 已有此用户的信息
-				res.send({
-					islogined: true
-				});
+				res.send(data);
 			}else{
 				var newUser = new User({
 					name: req.body.name

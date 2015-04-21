@@ -6,19 +6,23 @@ $(function(){
 	*/
 
 	/*
-	*@name   棋盘
-	*@parame h  横向维度
-	*@parame v  纵向维度
-	*@parame n  棋子颜色种类数
-	*@parame boxWid  棋盘宽度，用于当棋盘宽度发生变化时，调节棋盘布局（暂不使用）
+	* @name   棋盘
+	* @param h  横向维度
+	* @param v  纵向维度
+	* @param boxWid  棋盘宽度，用于当棋盘宽度发生变化时，调节棋盘布局（暂不使用）
+	* @param n  棋子颜色种类数
+	* @param elemBox   元素父级
+	* @param elemUl    用于添加棋子的ul
 	*/
-	function BtnBoard(h, v, n,boxWid){
+	function BtnBoard(h, v, n, boxWid, elemBox, elemUl){
 		this.dimensionHorizon = h || 5;
 		this.dimensionVertical = v || 4;
 		this.colorNums = n || 3;
 		this.boxWid = boxWid || 320;
 		this.fromTo = [];
 		this.needCutBtnArr = [];
+		this.mainBox = elemBox || 'mainBox';
+		this.mainUl = elemUl || 'mailUl';
 		this._init();
 	}
 
@@ -35,10 +39,10 @@ $(function(){
 
 			_this.dimensionHorizon = _this.dimensionVertical = 4;
 		}
-		_this.btnArr = new Array();
+		_this.btnArr = [];
 
 		for(var i = 0; i < _this.dimensionHorizon; ++i){
-			_this.btnArr[i] = new Array();
+			_this.btnArr[i] = [];
 		}
 
 		// 渲染到dom,<li id="l04"><span class="r"></span></li>
@@ -54,8 +58,8 @@ $(function(){
 				_temDom += '<li class="btn" style="width:'+_widPer+'%; top:'+_top+'px; left:'+_left+'%"><span class="c'+_this.btnArr[j][i]+'" style="height:'+_hei+'px"></span></li>'
 			}
 		}
-		$('#mainBox').css({width:_this.boxWid});
-		$('#mainUl').html(_temDom);
+		$(_this.mainBox).css({width:_this.boxWid});
+		$(_this.mainUl).html(_temDom);
 		_this.onEventClick('.btn');
 	};
 
@@ -242,13 +246,13 @@ $(function(){
 					console.log('not a line!');
 					this.cutUI.addBtnSelected(btnObj.x, btnObj.y,this)
 					this.fromTo[0] = btnObj;
-					return;
+					return false;
 				}
 			}else{
 				console.log('colorNum is diffrent!');
 				this.cutUI.addBtnSelected(btnObj.x, btnObj.y,this)
 				this.fromTo[0] = btnObj;
-				return;
+				return false;
 			}	
 		}
 	};
@@ -260,35 +264,5 @@ $(function(){
 		}
 		this.cutUI.deleteDom(this);
 	};
-
-	// $(window).resize(function(){
-	// 	var _wid = $('.btn').width(),
-	// 		_hei = _wid/bo.dimensionHorizon;
-
-	// 	$('.btn').each(function(i){
-	// 		$(this).css({
-	// 			top : Math.floor(i / bo.dimensionHorizon) * _wid,
-	// 			left : i % bo.dimensionHorizon * _wid
-	// 		})
-	// 	});
-	// 	$('.btn span').height(_wid);
-	// });
-	// 不好意思借用一下位置，先写在这里
-	// 提交用户昵称之后才开始游戏
-	$('#submit').on('click', function(){
-		var _name = $('#input').val();
-		if(!_name){
-			alert('请输入昵称以开始游戏！');
-		}else{
-			$.post('/postuser', {name:_name},function(data){
-				if(data.islogined){
-					console.log(data);
-					
-				}else{
-					var bo = new BtnBoard(8,4,5,640);
-					$('#mainBox').show();
-				}
-			},'json');
-		}
-	})
+	window.BtnBoard = BtnBoard;
 });
