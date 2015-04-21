@@ -66,7 +66,16 @@ $(function(){
     
     
     Game.prototype.showMap = function (json) {
-        console.log(json);
+        // 清除空数据
+        if(json.length){
+            for(var i = 0; i < json.length; ++i){
+                if(!json[i].length){
+                    json.splice(i,1);
+                }
+            }
+           console.log(json);
+        }
+        var _dom = '';
     };
 
 

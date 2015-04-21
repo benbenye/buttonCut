@@ -14,7 +14,7 @@ $(function(){
 	* @param elemBox   元素父级
 	* @param elemUl    用于添加棋子的ul
 	*/
-	function BtnBoard(h, v, n, boxWid, elemBox, elemUl){
+	function BtnBoard(h, v, n, boxWid, elemBox, elemUl, model){
 		this.dimensionHorizon = h || 5;
 		this.dimensionVertical = v || 4;
 		this.colorNums = n || 3;
@@ -23,15 +23,16 @@ $(function(){
 		this.needCutBtnArr = [];
 		this.mainBox = elemBox || 'mainBox';
 		this.mainUl = elemUl || 'mailUl';
-		this._init();
+		this._init(model);
 	}
 
-	BtnBoard.prototype._init = function() {
+	BtnBoard.prototype._init = function(model) {
 		/*
 		* 初始化棋盘
 		* 实现棋盘的初始化
 		* 传入的维度参数不符合的话，使用默认维度
 		* onEventClick: dom渲染，绑定棋子的点击事件
+		* @param model 模式类型 normal random
 		*/
 		var _this = this;
 
@@ -47,18 +48,21 @@ $(function(){
 
 		// 渲染到dom,<li id="l04"><span class="r"></span></li>
 		var _temDom = '';
-		for(var i = 0; i < _this.dimensionVertical; ++i){
-			for(var j = 0; j <_this.dimensionHorizon; ++j){
-				// 随机棋盘
-				_this.btnArr[j][i] = Math.floor(Math.random() * _this.colorNums);
-				var _widPer = 100/_this.dimensionHorizon,
-					_hei = (_this.boxWid/_this.dimensionHorizon),
-					_top = _hei * i,
-					_left = _widPer * j;
-				_temDom += '<li class="btn" style="width:'+_widPer+'%; top:'+_top+'px; left:'+_left+'%"><span class="c'+_this.btnArr[j][i]+'" style="height:'+_hei+'px"></span></li>'
+		if(model === 'random'){
+			for(var i = 0; i < _this.dimensionVertical; ++i){
+				for(var j = 0; j <_this.dimensionHorizon; ++j){
+					// 随机棋盘
+					_this.btnArr[j][i] = Math.floor(Math.random() * _this.colorNums);
+					var _widPer = 100/_this.dimensionHorizon,
+						_hei = (_this.boxWid/_this.dimensionHorizon),
+						_top = _hei * i,
+						_left = _widPer * j;
+					_temDom += '<li class="btn" style="width:'+_widPer+'%; top:'+_top+'px; left:'+_left+'%"><span class="c'+_this.btnArr[j][i]+'" style="height:'+_hei+'px"></span></li>'
+				}
 			}
+		}else{
+
 		}
-		console.log(_this.btnArr);
 		$(_this.mainBox).css({width:_this.boxWid});
 		$(_this.mainUl).html(_temDom);
 		_this.onEventClick('.btn');
