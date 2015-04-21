@@ -27,14 +27,16 @@ $(function(){
                 alert('请输入昵称以开始游戏！');
             }else{
                 $.post('/postuser', {name:_name},function(data){
-                    if(data.islogined){
-                        // 已有用户操作
-                        _this.showLevels(data);
-                    }else{
-                        // 新用户初始化
-                        var bo = new BtnBoard(8,4,5,640,'#mainBox','#mainUl');
-                        $('#mainBox').show();
-                    }
+                    //if(data.islogined){
+                    //    // 已有用户操作
+                    //    _this.showLevels(data);
+                    //}else{
+                    //    // 新用户初始化
+                    //    console.log(data);
+                    //    var bo = new BtnBoard(8,4,5,640,'#mainBox','#mainUl');
+                    //    $('#mainBox').show();
+                    //}
+                    _this.showLevels(data);
                 },'json');
             }
         });
@@ -46,6 +48,27 @@ $(function(){
         $('#staus').text('游戏进度：总分'+data.score+',当前关卡'+data.level);
         $('#login').hide();
         $('#levels').show();
+        $('#normalModule').click(function () {
+            _this.showNormalModule();
+        });
     };
+
+    Game.prototype.showNormalModule = function () {
+        var _this = this,
+            _json = '';
+
+        // 传统模式地图
+        $.getJSON('/javascripts/normalMap.json', function (json) {
+            _json = json;
+            _this.showMap(json);
+        });
+    };
+    
+    
+    Game.prototype.showMap = function (json) {
+        console.log(json);
+    };
+
+
     new Game();
 });

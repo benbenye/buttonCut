@@ -26,7 +26,7 @@ function User(user){
 User.prototype.save = function(cb){
 	// console.log(this);
 	var _user = {
-		name: this.user,
+		name: this.name,
 		score: this.score || 0,
 		level: this.level || 0
 	};

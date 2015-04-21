@@ -58,6 +58,7 @@ $(function(){
 				_temDom += '<li class="btn" style="width:'+_widPer+'%; top:'+_top+'px; left:'+_left+'%"><span class="c'+_this.btnArr[j][i]+'" style="height:'+_hei+'px"></span></li>'
 			}
 		}
+		console.log(_this.btnArr);
 		$(_this.mainBox).css({width:_this.boxWid});
 		$(_this.mainUl).html(_temDom);
 		_this.onEventClick('.btn');
