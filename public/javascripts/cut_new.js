@@ -100,6 +100,22 @@ $(function(){
 	};
 
 	/*
+	* normal 模式下，自动检测是否完成当前关卡，完成的话提示进入下一关
+	* */
+	BtnBoard.prototype.checkFinish = function(){
+		var _this = this;
+		console.log(_this.btnArr);
+		//if(!_this.btnArr.length){
+		//	//如何判断是否已经剪空？？
+		//	curGame.finishPassport();
+		//}
+		if(!$('.mainUl li:visible').length){
+			curGame.finishPassport();
+		}
+	};
+
+
+	/*
 	* 棋盘操作的UI层
 	* cutUI 只负责棋盘的UI层面的变化，不涉及到数据存储
 	* addBtnSelected: 给选中棋子添加选中效果
@@ -178,8 +194,7 @@ $(function(){
 					for(var i = Math.min(this.fromTo[0].x, btnObj.x), l = Math.max(this.fromTo[0].x, btnObj.x); i <= l; ++i){
 						console.log(this.btnArr[i][btnObj.y]);
 						if(this.btnArr[i][btnObj.y] !== +this.btnArr[i][btnObj.y]){//空位置怎么办了？
-							console.log('kong')
-							continue;
+							console.log('kong');
 						}else if(this.btnArr[i][btnObj.y] !== btnObj.colorNum){
 							console.log('中间有不同颜色的扣子');
 							this.cutUI.addBtnSelected(btnObj.x, btnObj.y, this);
@@ -273,7 +288,7 @@ $(function(){
 				this.cutUI.addBtnSelected(btnObj.x, btnObj.y,this)
 				this.fromTo[0] = btnObj;
 				return false;
-			}	
+			}
 		}
 	};
 
@@ -283,6 +298,7 @@ $(function(){
 			this.btnArr[this.needCutBtnArr[i].x][this.needCutBtnArr[i].y] = null;
 		}
 		this.cutUI.deleteDom(this);
+		this.checkFinish();
 	};
 	window.BtnBoard = BtnBoard;
 });

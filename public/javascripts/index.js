@@ -17,6 +17,20 @@ $(function(){
 
     function Game(){
         this.model = 'normal';
+        this.user = {
+            name: '',
+            score: 0,
+            normalModel: {
+                level: 1,
+                HP: 3
+            },
+            randomModel: {
+                level: 1,
+                HP: 3,
+                map:[]
+            }
+        };
+        this.normalMap = [];
         this.init();
     }
     Game.prototype.init = function () {
@@ -28,15 +42,9 @@ $(function(){
                 alert('请输入昵称以开始游戏！');
             }else{
                 $.post('/postuser', {name:_name},function(data){
-                    //if(data.islogined){
-                    //    // 已有用户操作
-                    //    _this.showLevels(data);
-                    //}else{
-                    //    // 新用户初始化
-                    //    console.log(data);
-                    //    var bo = new BtnBoard(8,4,5,640,'#mainBox','#mainUl');
-                    //    $('#mainBox').show();
-                    //}
+                    if(data.islogined){
+                        _this.user = data;
+                    }
                     _this.showLevels(data);
                 },'json');
             }
@@ -45,8 +53,10 @@ $(function(){
 
     Game.prototype.showLevels = function (data){
         var _this = this;
+        _this.user.name = data.name;
+        console.log(data);
         $('#username').text(data.name);
-        $('#staus').text('游戏进度：总分'+data.score+',当前关卡'+data.level);
+        $('#staus').text('游戏进度：总分'+data.score+',当前传统模式关卡'+data.normalModel.level+',当前随机模式关卡'+data.randomModel.level);
         $('#login').hide();
         $('#levels').show();
         $('#normalModule').click(function () {
@@ -56,12 +66,11 @@ $(function(){
     };
 
     Game.prototype.showNormalModule = function () {
-        var _this = this,
-            _json = '';
+        var _this = this;
 
         // 传统模式地图
         $.getJSON('/javascripts/normalMap.json', function (json) {
-            _json = json;
+            _this.normalMap = json;
             _this.showMap(json);
         });
     };
@@ -85,12 +94,50 @@ $(function(){
         $('.levelMap').append(_dom).show().find('li').click(function(){
             var _index = $(this).index();
 
-            new BtnBoard(8,4,5,$(window).width(),'#mainBox','#mainUl',_this.model, json[_index]);
+            new BtnBoard(json[_index].length,json[_index][0].length,5,$(window).width(),'#mainBox','#mainUl',_this.model, json[_index]);
         });
 
 
     };
 
+    /*
+     * 关卡完成后的提示
+     * */
+    Game.prototype.finishPassport = function(){
+        //  存储数据
+        this.user.score += 50;
+        this.user.normalModel.level += 1;
+        this.updateInfo();
+        this.showNextTip();
+    };
+    Game.prototype.showNextTip = function(){
+        var _dom = '<div id="tip">恭喜完成<div id="next">进入下一关</div></div>',
+            _this = this;
+        $('body').append(_dom);
+        $('#next').click(function(){
+            _this.nextPassport();
+        });
+    };
+    Game.prototype.updateInfo = function(){
+        var _this = this;
+        $('#staus').text('游戏进度：总分'+_this.user.score+',当前传统模式关卡'+_this.user.normalModel.level+',当前随机模式关卡'+_this.user.randomModel.level);
+    };
+    Game.prototype.nextPassport = function () {
+        if(this.model === 'normal'){
+            var _this = this,
+                map = _this.normalMap[_this.user.normalModel.level-1],
+                h = map.length,
+                v = map[0].length,
+                n = 5,
+                w = $(window).width();
 
-    new Game();
+            new BtnBoard(h, v, n, w, '#mainBox', '#mainUl', _this.model, map);
+        }else{
+            //new BtnBoard();
+        }
+    };
+
+
+    var curGame = new Game();
+    window.curGame = curGame;
 });

@@ -1,6 +1,5 @@
 var mongoose = require('mongoose'),
-	Schema = mongoose.Schema,
-	ObjectId = Schema.ObjectId;
+	Schema = mongoose.Schema;
 if (mongoose.readyState === 0 || mongoose.readyState === undefined) {
     mongoose.connect('mongodb://127.0.0.1:27017/cutbtn', function(err){
         if(!err){
@@ -13,14 +12,23 @@ if (mongoose.readyState === 0 || mongoose.readyState === undefined) {
 var UserSchema = new Schema({
 	name:         String,
 	score:        Number,
-	level:        Number
+	normalModel:  {
+					level: Number,
+					HP: Number
+				},
+	randomModel:  {
+					level: Number,
+					HP: Number,
+					map:Array
+				}
 });
 var userModel = mongoose.model('User', UserSchema);
 
 function User(user){
 	this.name = user.name;
 	this.score = user.score;
-	this.level = user.level;
+	this.normalModel = user.normalModel;
+	this.randomModel = user.randomModel;
 }
 
 User.prototype.save = function(cb){
@@ -28,7 +36,15 @@ User.prototype.save = function(cb){
 	var _user = {
 		name: this.name,
 		score: this.score || 0,
-		level: this.level || 0
+		normalModel: this.normalModel || {
+			level:1,
+			HP:3
+		},
+		randomModel: this.randomModel || {
+			level: 1,
+			HP: 3,
+			map:[]
+		}
 	};
 	var newUser = new userModel(_user);
 	newUser.save(function(err, _user){
@@ -45,11 +61,20 @@ User.checkName = function(obj, cb){
 	            return cb(err);
 	        }
 			if(user){
+				console.log(user);
 				cb(null, {
 					name:user.name,
 					islogined:true,
 					score:user.score || 0,
-					level: user.level || 0
+					normalModel: user.normalModel || {
+						level: 1,
+						HP: 3
+					},
+					randomModel: user.randomModel || {
+						level: 1,
+						HP: 3,
+						map: []
+					}
 				});// 返回json数据
 			}else{
 				cb(null, {
