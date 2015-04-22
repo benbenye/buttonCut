@@ -14,7 +14,7 @@ $(function(){
 	* @param elemBox   元素父级
 	* @param elemUl    用于添加棋子的ul
 	*/
-	function BtnBoard(h, v, n, boxWid, elemBox, elemUl, model){
+	function BtnBoard(h, v, n, boxWid, elemBox, elemUl, model, map){
 		this.dimensionHorizon = h || 5;
 		this.dimensionVertical = v || 4;
 		this.colorNums = n || 3;
@@ -23,10 +23,10 @@ $(function(){
 		this.needCutBtnArr = [];
 		this.mainBox = elemBox || 'mainBox';
 		this.mainUl = elemUl || 'mailUl';
-		this._init(model);
+		this._init(model, map);
 	}
 
-	BtnBoard.prototype._init = function(model) {
+	BtnBoard.prototype._init = function(model, map) {
 		/*
 		* 初始化棋盘
 		* 实现棋盘的初始化
@@ -57,14 +57,25 @@ $(function(){
 						_hei = (_this.boxWid/_this.dimensionHorizon),
 						_top = _hei * i,
 						_left = _widPer * j;
-					_temDom += '<li class="btn" style="width:'+_widPer+'%; top:'+_top+'px; left:'+_left+'%"><span class="c'+_this.btnArr[j][i]+'" style="height:'+_hei+'px"></span></li>'
+					_temDom += '<li class="btn" style="width:'+_widPer+'%; top:'+_top+'px; left:'+_left+'%"><span class="c'+_this.btnArr[j][i]+'" style="height:'+_hei+'px"></span></li>';
 				}
 			}
 		}else{
-
+			_this.dimensionHorizon = map.length;
+			_this.dimensionVertical = map[0].length;
+			console.log(map);
+			for(var i = 0; i < _this.dimensionVertical; ++i){
+				for(var j = 0; j < _this.dimensionHorizon; ++j){
+					_this.btnArr[j][i] = map[j][i];
+					var _widPer = 100/_this.dimensionHorizon,
+						_hei = (_this.boxWid/_this.dimensionHorizon),
+						_top = _hei * i,
+						_left = _widPer * j;
+					_temDom += '<li class="btn" style="width:'+_widPer+'%; top:'+_top+'px; left:'+_left+'%"><span class="c'+_this.btnArr[j][i]+'" style="height:'+_hei+'px"></span></li>';
+				}
+			}
 		}
-		$(_this.mainBox).css({width:_this.boxWid});
-		$(_this.mainUl).html(_temDom);
+		_this.cutUI.showBoard(_temDom, _this);
 		_this.onEventClick('.btn');
 	};
 
@@ -92,12 +103,17 @@ $(function(){
 	* 棋盘操作的UI层
 	* cutUI 只负责棋盘的UI层面的变化，不涉及到数据存储
 	* addBtnSelected: 给选中棋子添加选中效果
-	*               ====@parame   x    棋子的x坐标
-	*               ====@parame   y    棋子的y坐标
+	*               ==== @param   x    棋子的x坐标
+	*               ==== @param   y    棋子的y坐标
 	* deleteDom: 将符合条件的棋子从dom中删除
-	*               ====@parame   that  当前棋盘对象
+	*               ==== @param   that  当前棋盘对象
 	*/
 	BtnBoard.prototype.cutUI = {
+		showBoard : function(_temDom, that){
+			$(that.mainBox).css({width:that.boxWid});
+			$(that.mainUl).html(_temDom);
+			$(that.mainBox).show();
+		},
 		addBtnSelected : function(x, y, that){
 			var i = y * that.dimensionHorizon + x;
 			$('.btn:eq('+i+')').addClass('active').siblings().removeClass('active');
@@ -116,7 +132,7 @@ $(function(){
 	/*
 	* 判断两个棋子是否有效
 	* 借助this.formTo this.needCutBtnArr 两个数组
-	*@parame   btnObj    点击的最新的一个棋子
+	* @param   btnObj    点击的最新的一个棋子
 	*/
 	BtnBoard.prototype.canCutBtn = function(btnObj){
 
@@ -126,7 +142,7 @@ $(function(){
 			this.cutUI.addBtnSelected(btnObj.x, btnObj.y, this);
 		}else if(this.fromTo[0].x === btnObj.x && this.fromTo[0].y === btnObj.y){
 			// 点击的同一个扣子
-			return;
+			return false;
 		}else{
 			// 如果颜色相同
 			if(this.fromTo[0].colorNum === btnObj.colorNum){
@@ -136,7 +152,6 @@ $(function(){
 					for(var i = Math.min(this.fromTo[0].y, btnObj.y), l = Math.max(this.fromTo[0].y, btnObj.y); i <= l; ++i){
 						console.log(i+':'+l);
 						if(this.btnArr[btnObj.x][i] !== +this.btnArr[btnObj.x][i]){
-							continue;
 						}else if(this.btnArr[btnObj.x][i] && this.btnArr[btnObj.x][i] !== btnObj.colorNum){
 							console.log('中间有不同颜色的扣子');
 							this.cutUI.addBtnSelected(btnObj.x, btnObj.y, this);

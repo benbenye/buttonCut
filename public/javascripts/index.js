@@ -16,6 +16,7 @@ $(function(){
     // });
 
     function Game(){
+        this.model = 'normal';
         this.init();
     }
     Game.prototype.init = function () {
@@ -49,6 +50,7 @@ $(function(){
         $('#login').hide();
         $('#levels').show();
         $('#normalModule').click(function () {
+            _this.model = 'normal';
             _this.showNormalModule();
         });
     };
@@ -67,6 +69,7 @@ $(function(){
     
     Game.prototype.showMap = function (json) {
         // 清除空数据
+        _this = this;
         if(json.length){
             for(var i = 0; i < json.length; ++i){
                 if(!json[i].length){
@@ -76,6 +79,16 @@ $(function(){
            console.log(json);
         }
         var _dom = '';
+        for(var i = 0, l = json.length; i < l; ++i){
+            _dom += '<li class="mapLi">'+ (i+1) +'</li>'
+        }
+        $('.levelMap').append(_dom).show().find('li').click(function(){
+            var _index = $(this).index();
+
+            new BtnBoard(8,4,5,$(window).width(),'#mainBox','#mainUl',_this.model, json[_index]);
+        });
+
+
     };
 
 

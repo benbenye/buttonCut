@@ -10,3 +10,7 @@ html,body,#mainBox{height: 100%;}
 .mainUl li span.c4{background-position: 0 79%;}
 .mainUl li.fork{background-position: 0 -875px;}
 .mainUl li.active{background-position: 0 90.9%;}
+
+
+.levelMap .mapLi{border-radius: 999px; background: #bbbbbb;  display: inline-block; *display: inline; *zoom: 1; width: 40px;
+    height: 40px; text-align: center; line-height: 40px;}
