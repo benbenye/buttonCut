@@ -13,6 +13,8 @@ $(function(){
 	* @param n  棋子颜色种类数
 	* @param elemBox   元素父级
 	* @param elemUl    用于添加棋子的ul
+	* @param model 游戏模式
+	* @param map   传统模式下的地图
 	*/
 	function BtnBoard(h, v, n, boxWid, elemBox, elemUl, model, map){
 		this.dimensionHorizon = h || 5;
@@ -126,6 +128,7 @@ $(function(){
 	*/
 	BtnBoard.prototype.cutUI = {
 		showBoard : function(_temDom, that){
+			$('body').append($(that.mainBox)).append($(that.mainUl));
 			$(that.mainBox).css({width:that.boxWid});
 			$(that.mainUl).html(_temDom);
 			$(that.mainBox).show();

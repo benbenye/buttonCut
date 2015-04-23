@@ -45,20 +45,22 @@ $(function(){
                     if(data.islogined){
                         _this.user = data;
                     }
-                    _this.showLevels(data);
+                    _this.showModels(data);
                 },'json');
             }
         });
     };
 
-    Game.prototype.showLevels = function (data){
+    Game.prototype.showModels = function (data){
         var _this = this;
         _this.user.name = data.name;
-        console.log(data);
-        $('#username').text(data.name);
-        $('#staus').text('游戏进度：总分'+data.score+',当前传统模式关卡'+data.normalModel.level+',当前随机模式关卡'+data.randomModel.level);
-        $('#login').hide();
+        var _domModels = '<div id="levels" class="dn"><div id="normalModule">传统模式</div><div id="randomModule">随机模式</div></div>',
+            _domUser = '<idv id="user"><img src="/images/avatar.jpg" width="40" alt="'+data.name+'"/><div class="user-infor"><div class="name">'+data.name+'</div><div class="score">积分：'+data.score+'</div></div></idv>';
+
+        $('body').html(_domUser+_domModels);
         $('#levels').show();
+
+
         $('#normalModule').click(function () {
             _this.model = 'normal';
             _this.showNormalModule();
@@ -67,7 +69,6 @@ $(function(){
 
     Game.prototype.showNormalModule = function () {
         var _this = this;
-
         // 传统模式地图
         $.getJSON('/javascripts/normalMap.json', function (json) {
             _this.normalMap = json;
@@ -85,13 +86,15 @@ $(function(){
                     json.splice(i,1);
                 }
             }
-           console.log(json);
         }
         var _dom = '';
         for(var i = 0, l = json.length; i < l; ++i){
             _dom += '<li class="mapLi">'+ (i+1) +'</li>'
         }
-        $('.levelMap').append(_dom).show().find('li').click(function(){
+        _dom = '<ul class="levelMap">'+ _dom +'</div>';
+        $('#levels').hide();
+        $('body').append(_dom);
+        $('.levelMap').show().find('li').click(function(){
             var _index = $(this).index();
 
             new BtnBoard(json[_index].length,json[_index][0].length,5,$(window).width(),'#mainBox','#mainUl',_this.model, json[_index]);
