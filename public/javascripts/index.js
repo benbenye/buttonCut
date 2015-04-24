@@ -49,15 +49,20 @@ $(function(){
                 },'json');
             }
         });
+        $(window).unload(function(){
+            $.post('/saveuserinfor',_this.user,function(){
+                alert('ok');
+            });
+        },'json');
     };
 
     Game.prototype.showModels = function (data){
         var _this = this;
         _this.user.name = data.name;
-        var _domModels = '<div id="levels" class="dn"><div id="normalModule">传统模式</div><div id="randomModule">随机模式</div></div>',
-            _domUser = '<idv id="user"><img src="/images/avatar.jpg" width="40" alt="'+data.name+'"/><div class="user-infor"><div class="name">'+data.name+'</div><div class="score">积分：'+data.score+'</div></div></idv>';
-
-        $('body').html(_domUser+_domModels);
+        var _domModels = '<div id="levels" class="dn"><div id="normalModule" class="btn-module">传统模式</div><div id="randomModule" class="btn-module">随机模式</div></div>',
+            _domUser = '<div id="user"><img src="/images/avatar.jpg" width="120" alt="'+data.name+'"/><div class="user-infor"><div class="name">'+data.name+'</div><div class="score">积分：'+data.score+'</div></div></idv>';
+        var _dom = _domUser+_domModels;
+        $('body').html(_dom);
         $('#levels').show();
 
 

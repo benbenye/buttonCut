@@ -1,4 +1,4 @@
-html,body,#mainBox{height: 100%;}
+body{ padding: 50px;}
 #mainBox{width: 100%; background: url(../images/bg.png);}
 .mainUl{position: relative;}
 .mainUl li{position: absolute;background-image: url(../images/btnRGBSmall.png); background-repeat: no-repeat; background-size: 100%; background-position: -100% -100%;}
@@ -14,3 +14,41 @@ html,body,#mainBox{height: 100%;}
 
 .levelMap .mapLi{border-radius: 999px; background: #bbbbbb;  display: inline-block; *display: inline; *zoom: 1; width: 40px;
     height: 40px; text-align: center; line-height: 40px;}
+
+
+/*
+* UI 界面
+*/
+.title1 {
+    font-size: 30px;
+    text-align: center;
+    padding-bottom: 30px;
+    padding-top: 20px;
+}
+#input {
+    border: none;
+    outline: none;
+    font-size: 28px;
+    text-align: center;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.user-infor {
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+}
+
+.btn-module{
+    width: 30%;
+    height: 40px;
+    border-radius: 4px;
+    text-align: center;
+    margin: 30px auto 20px;
+    border: 2px solid hsla(60,50%,80%,.8);
+    background-image: radial-gradient(50px circle,hsla(220,89%,100%,.1),hsla(30,60%,60%,1));
+}
+
+.page1{}

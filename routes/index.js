@@ -4,7 +4,7 @@ var User = require('../modules/user.js');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'bby剪扣子游戏' });
+  res.render('index', { title: '剪吧' });
 });
 router.post('/postuser', function(req, res, next){
 	User.checkName({name:req.body.name},function(err, data){

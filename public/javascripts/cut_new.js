@@ -128,7 +128,7 @@ $(function(){
 	*/
 	BtnBoard.prototype.cutUI = {
 		showBoard : function(_temDom, that){
-			$('body').append($(that.mainBox)).append($(that.mainUl));
+			$('body').append($('<div id="'+that.mainBox.substr(1)+'">'+'<ul id="'+that.mainUl.substr(1)+'" class="'+that.mainUl.substr(1)+'"></ul>'+'</div>'));
 			$(that.mainBox).css({width:that.boxWid});
 			$(that.mainUl).html(_temDom);
 			$(that.mainBox).show();
