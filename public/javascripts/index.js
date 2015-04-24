@@ -51,7 +51,7 @@ $(function(){
         });
         $(window).unload(function(){
             $.post('/saveuserinfor',_this.user,function(){
-                alert('ok');
+                alert('以保存进度');
             });
         },'json');
     };
