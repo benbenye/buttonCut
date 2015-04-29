@@ -3,6 +3,7 @@ $(function(){
 	* powered by bby
 	* https://github.com/benbenye
 	* http://blog.csdn.net/wmzy1067111110
+	* 此文件负责生成棋盘
 	*/
 
 	/*
@@ -20,7 +21,7 @@ $(function(){
 		this.dimensionHorizon = h || 5;
 		this.dimensionVertical = v || 4;
 		this.colorNums = n || 3;
-		this.boxWid = boxWid || 320;
+		this.boxWid = boxWid-100 || 320;
 		this.fromTo = [];
 		this.needCutBtnArr = [];
 		this.mainBox = elemBox || 'mainBox';

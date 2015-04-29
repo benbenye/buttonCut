@@ -51,4 +51,41 @@ body{ padding: 50px;}
     background-image: radial-gradient(50px circle,hsla(220,89%,100%,.1),hsla(30,60%,60%,1));
 }
 
-.page1{}
+.dialog-bg {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, .5);
+    text-align: center;
+}
+.dialog{
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+    vertical-align: middle;
+    min-width: 450px;
+    min-height: 320px;
+    border: 3px solid #ffeeff;
+    border-radius: 4px;
+    background-color: #fff;
+    -webkit-animation: dialogScale .3s;
+    animation: dialogScale .3s;
+}
+@-webkit-keyframes dialogScale {
+    0% {
+        transform: scale(0);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+.dialog-bg .ref{
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+    width: 0;
+    height: 100%;
+    vertical-align: middle;
+}

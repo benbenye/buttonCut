@@ -1,5 +1,6 @@
 /**
  * Created by bby on 15/4/21.
+ * 此文件是游戏主文件
  */
 $(function(){
     // $(window).resize(function(){
@@ -119,10 +120,11 @@ $(function(){
         this.showNextTip();
     };
     Game.prototype.showNextTip = function(){
-        var _dom = '<div id="tip">恭喜完成<div id="next">进入下一关</div></div>',
+        var _dom = '<div id="tip" class="dialog-bg"><div class="dialog">恭喜完成<div id="next">进入下一关</div></div><span class="ref"></span></div>',
             _this = this;
         $('body').append(_dom);
         $('#next').click(function(){
+            $('#tip').remove();
             _this.nextPassport();
         });
     };
