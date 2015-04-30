@@ -55,11 +55,28 @@ $(function(){
         });
 
         //关闭页面判断
-        window.onbeforeunload = function() {
-             $.post('/postUserInformation',_this.user,function(){
-            },'json');
-            return "你的文章尚未提交，我们已为你自动保存，确定离开此页面吗？";
-        };
+
+        $('body').on('click','img',function(){
+            $.ajax({
+                type: 'POST',
+                url: '/postUserInformation',
+                data: JSON.stringify(_this.user),
+                success: function(data) { },
+                contentType: "application/json",
+                dataType: 'json'
+            });
+        });
+        // window.onbeforeunload = function() {
+        //      $.ajax({
+        //          type: 'POST',
+        //          url: '/postUserInformation',
+        //          data: _this.user,
+        //          success: function(data) { },
+        //          contentType: "application/json",
+        //          dataType: 'json'
+        //      });
+        //     return "你的文章尚未提交，我们已为你自动保存，确定离开此页面吗？";
+        // };
     };
 
     Game.prototype.showModels = function (data){
@@ -122,7 +139,20 @@ $(function(){
     };
     
     Game.prototype.showRandomMap = function () {
-        
+        var _this = this;
+        var _dom = '';
+        for(var i = 0, l = _this.user.randomModel.map.length; i < l; ++i){
+            _dom += '<li class="mapLi">'+ (i+1) +'</li>';
+        }
+        if(_dom === ''){
+            _dom += '<li class="mapLi">1</li>';
+        }
+        _dom = '<ul class="levelMap">'+ _dom +'</div>';
+        $('#levels').hide();
+        $('body').append(_dom);
+        $('.levelMap').show().find('li').click(function(){
+            new BtnBoard(4,4,5,$(window).width(),'#mainBox','#mainUl',_this.model);
+        });
     };
 
     /*
