@@ -84,9 +84,11 @@
       <file leaf-file-name="index.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/public/javascripts/index.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.7936726">
-              <caret line="65" column="12" selection-start-line="65" selection-start-column="12" selection-end-line="65" selection-end-column="12" />
-              <folding />
+            <state vertical-scroll-proportion="1.6162311">
+              <caret line="47" column="18" selection-start-line="47" selection-start-column="18" selection-end-line="47" selection-end-column="18" />
+              <folding>
+                <marker date="1430385498000" expanded="true" signature="0:2" placeholder="/** Created by bby on 15/4/21. ...*/" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -576,7 +578,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+          <folding>
+            <marker date="1430385498000" expanded="true" signature="0:2" placeholder="/** Created by bby on 15/4/21. ...*/" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -647,7 +651,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="94" column="28" selection-start-line="94" selection-start-column="28" selection-end-line="94" selection-end-column="28" />
-          <folding />
+          <folding>
+            <marker date="1430385498000" expanded="true" signature="0:2" placeholder="/** Created by bby on 15/4/21. ...*/" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -794,9 +800,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/public/javascripts/index.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7936726">
-          <caret line="65" column="12" selection-start-line="65" selection-start-column="12" selection-end-line="65" selection-end-column="12" />
-          <folding />
+        <state vertical-scroll-proportion="1.6162311">
+          <caret line="47" column="18" selection-start-line="47" selection-start-column="18" selection-end-line="47" selection-end-column="18" />
+          <folding>
+            <marker date="1430385498000" expanded="true" signature="0:2" placeholder="/** Created by bby on 15/4/21. ...*/" />
+          </folding>
         </state>
       </provider>
     </entry>

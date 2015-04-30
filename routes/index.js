@@ -30,7 +30,6 @@ router.post('/postuser', function(req, res, next){
 	});
 });
 router.post('/postUserInformation', function (req, res, next) {
-
 	console.log(req.body);
 	var ss = {
 		score: req.body.score,

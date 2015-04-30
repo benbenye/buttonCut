@@ -21,6 +21,7 @@ $(function(){
 
     function Game(){
         this.model = 'normal';
+        this.status = 0;
         this.user = {
             name: '',
             score: 0,
@@ -48,10 +49,15 @@ $(function(){
                 $.post('/postuser', {name:_name},function(data){
                     if(data.islogined){
                         _this.user = data;
+                    }else{
+                        _this.user.name = data.name;
                     }
-                    _this.showModels(data);
+                    _this.showModels();
                 },'json');
             }
+            $('.back').click(function(){
+                _this.back();
+            });
         });
 
         //关闭页面判断
@@ -66,26 +72,53 @@ $(function(){
                 dataType: 'json'
             });
         });
-        // window.onbeforeunload = function() {
-        //      $.ajax({
-        //          type: 'POST',
-        //          url: '/postUserInformation',
-        //          data: _this.user,
-        //          success: function(data) { },
-        //          contentType: "application/json",
-        //          dataType: 'json'
-        //      });
-        //     return "你的文章尚未提交，我们已为你自动保存，确定离开此页面吗？";
-        // };
+       
     };
 
-    Game.prototype.showModels = function (data){
+    Game.prototype.back = function(){
+        /* 几种返回的情况
+        * 1：登录后返回，2：选择模式中返回，3：游戏中返回
+        * 1--退出登录，可以重新选择用户登录
+        * 2--返回重新选择模式类型
+        * 3--终断游戏，放弃存储数据，回到模式选择中
+        * 三种游戏状态再加上游戏开始界面 0
+        */
         var _this = this;
-        _this.user.name = data.name;
+        switch(_this.status){
+            case 1:
+                window.location.reload();
+                break;
+            case 2:
+                _this.clearDom();
+                _this.showModels();
+                break;
+            case 3:
+                var isBack = window.confirm('确定要返回吗，这会消耗你的一点体力值');
+                if(isBack){
+                    _this.clearDom();
+                    _this.showModule();
+                }
+                break;
+            default:
+                
+                break;
+        }
+    };
+
+    Game.prototype.clearDom = function(){
+        $('#levels, .levelMap, #mainBox').remove();
+    };
+
+    /*
+    * showModels  显示游戏模式（传统和随机模式）
+    * 同时注册两个模式的入口
+    */
+    Game.prototype.showModels = function (){
+        var _this = this;
         var _domModels = '<div id="levels" class="dn"><div id="normalModule" class="btn-module">传统模式</div><div id="randomModule" class="btn-module">随机模式</div></div>',
-            _domUser = '<div id="user"><img src="/images/avatar.jpg" width="120" alt="'+data.name+'"/><div class="user-infor"><div class="name">'+data.name+'</div><div class="score">积分：'+data.score+'</div></div></idv>';
+            _domUser = '<div id="user"><img src="/images/avatar.jpg" width="120" alt="'+_this.user.name+'"/><div class="user-infor"><div class="name">'+_this.user.name+'</div><div class="score">积分：'+_this.user.score+'</div></div></idv>';
         var _dom = _domUser+_domModels;
-        $('body').html(_dom);
+        $('.container').html(_dom);
         $('#levels').show();
 
 
@@ -97,8 +130,11 @@ $(function(){
             _this.model = 'random';
             _this.showModule();
         });
+        _this.status = 1;
     };
-
+    /*
+    * showModule 根据所选模式展示相应模式的地图
+    */
     Game.prototype.showModule = function () {
         var _this = this;
         if(_this.model === 'normal'){
@@ -111,6 +147,7 @@ $(function(){
             // 随机模式
             _this.showRandomMap();
         }
+        _this.status = 2;
     };
     
     
@@ -135,6 +172,7 @@ $(function(){
             var _index = $(this).index();
 
             new BtnBoard(json[_index].length,json[_index][0].length,5,$(window).width(),'#mainBox','#mainUl',_this.model, json[_index]);
+            _this.status = 3;
         });
     };
     
@@ -152,6 +190,7 @@ $(function(){
         $('body').append(_dom);
         $('.levelMap').show().find('li').click(function(){
             new BtnBoard(4,4,5,$(window).width(),'#mainBox','#mainUl',_this.model);
+            _this.status = 3;
         });
     };
 
