@@ -1,3 +1,6 @@
+/* global _this */
+/// <reference path="../../typings/jquery/jquery.d.ts"/>
+/* global BtnBoard */
 /**
  * Created by bby on 15/4/21.
  * 此文件是游戏主文件
@@ -50,11 +53,13 @@ $(function(){
                 },'json');
             }
         });
-        $(window).unload(function(){
-            $.post('/saveuserinfor',_this.user,function(){
-                alert('以保存进度');
-            });
-        },'json');
+
+        //关闭页面判断
+        window.onbeforeunload = function() {
+             $.post('/postUserInformation',_this.user,function(){
+            },'json');
+            return "你的文章尚未提交，我们已为你自动保存，确定离开此页面吗？";
+        };
     };
 
     Game.prototype.showModels = function (data){
@@ -69,17 +74,26 @@ $(function(){
 
         $('#normalModule').click(function () {
             _this.model = 'normal';
-            _this.showNormalModule();
+            _this.showModule();
+        });
+        $('#randomModule').click(function () {
+            _this.model = 'random';
+            _this.showModule();
         });
     };
 
-    Game.prototype.showNormalModule = function () {
+    Game.prototype.showModule = function () {
         var _this = this;
+        if(_this.model === 'normal'){
         // 传统模式地图
-        $.getJSON('/javascripts/normalMap.json', function (json) {
-            _this.normalMap = json;
-            _this.showMap(json);
-        });
+            $.getJSON('/javascripts/normalMap.json', function (json) {
+                _this.normalMap = json;
+                _this.showMap(json);
+            });
+        }else{
+            // 随机模式
+            _this.showRandomMap();
+        }
     };
     
     
@@ -105,8 +119,10 @@ $(function(){
 
             new BtnBoard(json[_index].length,json[_index][0].length,5,$(window).width(),'#mainBox','#mainUl',_this.model, json[_index]);
         });
-
-
+    };
+    
+    Game.prototype.showRandomMap = function () {
+        
     };
 
     /*
@@ -139,7 +155,7 @@ $(function(){
                 h = map.length,
                 v = map[0].length,
                 n = 5,
-                w = $(window).width();
+                w = 640;
 
             new BtnBoard(h, v, n, w, '#mainBox', '#mainUl', _this.model, map);
         }else{

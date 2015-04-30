@@ -29,4 +29,27 @@ router.post('/postuser', function(req, res, next){
 		}
 	});
 });
+router.post('/postUserInformation', function (req, res, next) {
+
+	console.log(req.body.normalModel.level);
+	var ss = {
+		score: req.body.score,
+		randomModel: {
+			level: req.body.randomModel.level,
+			HP: req.body.randomModel.HP
+		},
+		normalModel: {
+			level: req.body.normalModel.level,
+			HP: req.body.normalModel.HP
+		}
+	};
+	console.log(ss);
+	User.update(req.body.name, ss, function(err, user){
+			if(err){
+				console.log(err.message);
+			}else{
+				res.send(user);
+			}
+	});
+});
 module.exports = router;

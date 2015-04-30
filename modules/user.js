@@ -83,4 +83,14 @@ User.checkName = function(obj, cb){
 			}
 	    });
 };
+User.update = function (name, obj, cb) {
+	console.log(obj);
+	userModel.update({name:name}, {$set: obj}, function (err, user) {
+		if(err){
+			cb(err);
+			return false;
+		}
+		cb(null, user);
+	})
+};
 module.exports = User;
